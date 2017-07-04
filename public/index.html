@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 
 <head>
 	<meta charset="utf-8">
 	<title>Recess</title>
+	<link rel="icon" href="./assets/oie_transparent.png">
 	<!-- Semantic UI Stylesheet -->
 	<link rel="stylesheet" type="text/css" href="../semantic/dist/semantic.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
 	<link rel="stylesheet" href="./src/styles/nav.css">
+	<link rel="stylesheet" href="./src/styles/index.css">
+	<link rel="stylesheet" href="./src/styles/sign-up.css">
 </head>
 
-<body>
+<body class="index-body">
 
-	<div id="nav" class="ui borderless top fixed menu">
-		<div id="logo-area" class="item">
-			<img id="logo" src="../recesslogo2.png">
-			<h1>Recess</h1>
-		</div>
-		<div class="right menu">
-			<a class="item">About</a>
-			<a class="item">Find Your Team</a>
-			<a class="item">Create A New Team</a>
-			<div class="item">
-				<button class="ui primary button">Sign In</button>
-			</div>
-		</div>
+	<div class="main">
+		<nav-dir></nav-dir>
+		<ui-view></ui-view>
 	</div>
+	<!-- <div id="footer" class="ui vertical footer segment">
+		Created by Karan Kwatra
+	</div> -->
 
 
 	<!-- Semantic-UI -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 	<script src="../semantic/dist/semantic.min.js"></script>
+	<!-- Angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+	<script src="./src/app.js"></script>
+	<script src="./src/views/nav/nav.js"></script>
+	<script src="./src/views/home/homeCtrl.js"></script>
+	<script src="./src/views/sign-up/signUpCtrl.js"></script>
 </body>
 
 </html>

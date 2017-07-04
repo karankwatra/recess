@@ -1,0 +1,32 @@
+
+.index-body{
+	background-image: url('../../assets/gplaypattern.png');
+	padding: 0;
+}
+
+.column{
+	max-width: 450px;
+}
+
+#sign-in-box{
+	padding-top: 6%;
+}
+
+#take5{
+	font-style: italic;
+	font-size: 90px;
+	text-shadow: 2px 2px 8px #808080;
+	color: #333333;
+}
+
+#login-box{
+	margin-top: 0;
+}
+
+#footer{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	margin: 0;
+	text-align: center;
+}
