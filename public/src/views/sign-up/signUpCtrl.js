@@ -1,4 +1,4 @@
-angular.module("app").controller("signUpCtrl", function($scope, $state) {
+angular.module("app").controller("signUpCtrl", function($scope, $state, signUpService) {
 
 	$('input:text, .ui.button', '.ui.action.input')
 		.on('click', function(e) {
@@ -11,6 +11,10 @@ angular.module("app").controller("signUpCtrl", function($scope, $state) {
 			$('input:text', $(e.target).parent()).val(name);
 			console.log(name);
 		});
+
+	$scope.createAccount = function(user){
+		signUpService.createAccount(user); 
+	}
 
 	$('.ui.form')
 		.form({

@@ -1,54 +1,54 @@
-<div class="overlay placeholder">
+<div class="ui middle aligned center aligned grid">
 
-<form id="sign-up-form" class="ui large form">
+<form name="myForm" id="sign-up-form" class="ui large form">
 	<div class="ui segment">
 		<h1 class="ui dividing header">Create your Recess Account</h1>
 		<div class="field">
 			<h5>Name</h5>
 			<div class="two fields">
 				<div class="field">
-					<input type="text" name="firstname" placeholder="First">
+					<input ng-model="user.firstname" type="text" name="firstname" placeholder="First">
 				</div>
 				<div class="field">
-					<input type="text" name="lastname" placeholder="Last">
+					<input ng-model="user.lastname" type="text" name="lastname" placeholder="Last">
 				</div>
 			</div>
 		</div>
 		<div class="field">
 			<h5>Choose Your Username</h5>
 			<div class="field">
-				<input type="text" name="username" placeholder="Username">
+				<input ng-model="user.username" type="text" name="username" placeholder="Username">
 			</div>
 		</div>
 		<div class="field">
 			<h5>Email</h5>
 			<div class="field">
-				<input type="text" name="email" placeholder="Email">
+				<input ng-model="user.email" type="text" name="email" placeholder="Email">
 			</div>
 		</div>
 		<div class="field">
 			<h5>Password</h5>
 			<div class="field">
-				<input type="password" name="password" placeholder="Password">
+				<input ng-model="user.password1" type="password" name="password" placeholder="Password">
 			</div>
 		</div>
 		<div class="field">
 			<h5>Confirm Password</h5>
 			<div class="field">
-				<input type="password" name="password2" placeholder="Confirm Password">
+				<input ng-model="user.password2" type="password" name="password2" placeholder="Confirm Password">
 			</div>
 		</div>
 		<div class="field">
 	        <h5>Profile Picture</h5>
 	        <div class="ui fluid file input action">
-	            <input type="text" readonly>
-	            <input type="file" id="file1" name="files1" autocomplete="off">
+	            <input ng-model="user.profilepic" type="text" readonly>
+	            <input  type="file" id="file1" name="files1" autocomplete="off">
 	            <div class="ui button">
 	                Select...
 	            </div>
 	        </div>
 	    </div>
-		<div class="ui fluid large submit button">Create Account</div>
+		<div ng-click="createAccount(user)" class="ui fluid large submit button">Create Account</div>
 	</div>
 
 	<div class="ui error message"></div>
