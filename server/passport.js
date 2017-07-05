@@ -27,32 +27,40 @@ module.exports = function(passport) {
 			passwordField: 'password1',
 			passReqToCallback: true // allows us to pass back the entire request to the callback
 		},
-		function(req, email, password, done) {
+		function(req, res, email, password, done) {
 			db = req.app.get('db');
-			// console.log(db);
-			// console.log(req.body);
-			db.createUserAccount([req.body.username, req.body.password1, req.body.email,
-									req.body.firstname, req.body.lastname])
-									.then(function(response){
-										return done(null, response)
-									})
-									.catch(function(err){
-										console.log(err);
-									})
+			//validate create account form
+			req.checkBody("firstname", "Enter a first name").notEmpty();
+			req.checkBody("lastname", "Enter a last name").notEmpty();
+			req.checkBody("username", "Enter a valid username").notEmpty().len(6);
+			req.checkBody("email", "Enter a valid email address.").notEmpty().isEmail();
+			req.checkBody("password1", "Enter a valid password").notEmpty().matches(req.body.password2).len(6);
+			console.log(req.body);
+
+			var errors = req.validationErrors();
+			if (errors) {
+				console.log("errors");
+			} else {
+				db.createUserAccount([req.body.username, req.body.password1, req.body.email,
+										req.body.firstname, req.body.lastname])
+										.then(function(response){
+											return done(null, response)
+										})
+										.catch(function(err){
+											console.log(err);
+										})
+			}
+
+
 			// asynchronous
 			// User.findOne wont fire unless data is sent back
 			process.nextTick(function() {
-
-
-
-
 
 				// if (email === 'anything@gmail.com' && password == '123') {
 				// 	return done(null, {name: "Karan", email: "anything@gmail.com"})
 				// } else {
 				// 	return done(null, false)
 				// }
-
 
 
 				// find a user whose email is the same as the forms email

@@ -11,6 +11,8 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+
+var validator = require('express-validator');
 require('./server/passport')(passport)
 
 var config = require('./server/config');
@@ -22,10 +24,13 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/", express.static(__dirname + '/public'));
+app.use(validator());
+
 
 app.post('/api/signup', passport.authenticate('local-signup', {
 	successRedirect : '/user', // redirect to the secure profile section
