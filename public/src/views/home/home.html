@@ -5,34 +5,34 @@
 		<h3 id="login-box" class="ui image header">
 			<img src="./assets/oie_transparent.png" class="image">
 			  <div class="content">
-				Log-in to your account
+				Log-in to your team
 			  </div>
 		</h3>
 		<form class="ui large form">
 			<div class="ui segment">
 				<div class="field">
 					<div class="ui left icon input">
-						<i class="user icon"></i>
-						<input type="text" name="username" placeholder="Username">
+						<i class="home icon"></i>
+						<input ng-model="team.name"type="text" name="team_name" placeholder="Team Name">
 					</div>
 				</div>
 				<div class="field">
 					<div class="ui left icon input">
 						<i class="lock icon"></i>
-						<input type="password" name="password" placeholder="Password">
+						<input ng-model="team.password" type="password" name="password" placeholder="Password">
 					</div>
 				</div>
-				<div class="ui fluid large submit button">Login</div>
+				<div ng-click="signInTeam(team)" class="ui fluid large submit button">Login</div>
 			</div>
 
 			<div class="ui error message"></div>
 
 		</form>
-
+<!--
 		<div class="ui message">
 			New to Recess? <a ui-sref="sign-up">Sign Up</a> <br>
 			<a href="#">Forgot Password?</a>
-		</div>
+		</div> -->
 	</div>
 
 </div>

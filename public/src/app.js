@@ -4,7 +4,9 @@ angular.module("app", ['ui.router'])
 	console.log("app running");
 })
 
-.config(function($urlRouterProvider, $stateProvider){
+.config(function($urlRouterProvider, $stateProvider,$qProvider){
+
+	$qProvider.errorOnUnhandledRejections(false);
 
 	$urlRouterProvider.otherwise('/');
 
@@ -18,6 +20,11 @@ angular.module("app", ['ui.router'])
 			url:"/sign-up",
 			templateUrl: './src/views/sign-up/sign-up.html',
 			controller: "signUpCtrl"
+		})
+		.state("team", {
+			url:"/team/:id",
+			templateUrl: './src/views/team/team.html',
+			controller: "teamCtrl"
 		})
 
 })

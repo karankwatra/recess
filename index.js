@@ -17,6 +17,7 @@ require('./server/passport')(passport)
 
 var config = require('./server/config');
 var userAccountCtrl = require('./server/userAccountCtrl');
+var teamCtrl = require('./server/teamCtrl');
 
 var app = express();
 
@@ -28,27 +29,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session(config.session));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use("/", express.static(__dirname + '/public'));
-app.use(validator());
-
-
-app.post('/api/signup', passport.authenticate('local-signup', {
-	successRedirect : '/user', // redirect to the secure profile section
-	failureRedirect : '/failure', // redirect back to the signup page if there is an error
-	failureFlash : false // allow flash messages
-}));
-// app.post('/api/signup', userAccountCtrl.createUserAccount);
-
-app.get('/user', function(req, res, next) {
-	res.send(req.user)
-})
-app.get('/failure', function(req, res, next) {
-	res.status(401).json({message: "Invalid password or email"})
-})
-
+app.use(express.static(__dirname + '/public'));
+// app.use(validator());
 massive(config.postgres).then(function(db) {
 	app.set('db', db);
 })
+
+// app.post('/api/signup', passport.authenticate('local-signup'), function(req, res, next) {
+// 	res.redirect('http://localhost:3000/#!/')
+// })
+// app.post('/api/signup', userAccountCtrl.createUserAccount);
+// app.get('/users/:id', function(req, res, next) {
+// 	console.log(req.params.id)
+// 	return res.send(req.user)
+// })
+
 
 app.listen(port, function() {
 	console.log('server listening on port', port);
