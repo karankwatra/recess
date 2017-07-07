@@ -1,1 +1,100 @@
-TEAM {{id}}
+<!-- TEAM {{id}} -->
+
+<body>
+
+	<div id="enter-name-modal" class="ui small modal">
+		<form class="ui form">
+			<div class="field">
+				<label>Enter your Name:</label>
+				<br>
+				<input type="text" ng-model="name_in">
+			</div>
+		</form>
+		<div class="actions">
+			<div ng-click="getName(name_in)" class="ui positive right labeled icon button">
+				Yep, that's me
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+
+	<div id="enter-location-modal" class="ui small modal">
+		<form class="ui form">
+			<div class="field">
+				<label>Enter Location Name: </label>
+				<br>
+				<input type="text" ng-model="location_name_in">
+			</div>
+		</form>
+		<div class="actions">
+			<div ng-click="addLocation(location_name_in)" class="ui positive right labeled icon button">
+				Submit
+				<i class="angle double right icon"></i>
+			</div>
+		</div>
+	</div>
+
+	<div id="team-sidebar" class="ui vertical sidebar menu left visible">
+		<div class="item">
+			<img class="logo icon image" id="recess-team-logo-img" src="./assets/oie_transparent.png">
+			<a id="recess-team-logo" ui-sref="home"><b>Recess</b></a>
+		</div>
+		<div id="main-team-content">
+			<div class="item">
+				<h3>{{teamName}}</h3>
+				<h5 id="team-username">{{name}}</h5>
+				<form ng-if="!name" class="ui form">
+					<div class="field">
+						<label>Enter your Name:</label>
+						<br>
+						<input type="text" ng-model="name_submit_in">
+						<button ng-click="getName(name_submit_in)" id="name-submit" class="ui primary button">Submit</button>
+					</div>
+				</form>
+			</div>
+			<div id="locations" class="inline item">
+				<h3 class="nav-headers">Locations
+					<button ng-click="triggerLocationModal()" id="team-nav-buttons" id="add-location" class="ui icon button">
+						<i class="plus icon"></i>
+					</button>
+				</h3>
+				<div class="ui vertical fluid buttons">
+					<button ng-repeat="location in locations" ng-click="changeLocation(location)" class="ui button team-nav-buttons">{{location.location_name}}</button>
+				</div>
+			</div>
+			<div id="direct-messages" class="inline item">
+				<h3 class="nav-headers">Direct Messages
+				<button  id="team-nav-buttons" id="add-location" class="ui icon button">
+					<i class="plus icon"></i>
+				</button>
+			</h3>
+				<div class="ui vertical fluid buttons">
+					<button  class="ui button">Person 1 </button>
+					<button  class="ui button">Person 2</button>
+					<button  class="ui button">Person 3</button>
+					<button class="ui button">Person 4</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="team-columns">
+		<div class=" info-segment">
+			<h1>{{locationName}}</h1>
+			<button ng-disabled="!name" ng-click="checkInOutUser()" class="ui primary button">Check In/Out</button>
+			<h2 ng-if="checkIns.length">Current Users</h2>
+			<h2 ng-if="!checkIns.length">No one here right now!</h2>
+			<div id="check-in" ng-repeat="checkIn in checkIns">
+				<h3 id="check-in-name">{{checkIn.user_name}}</h3>
+				<h4 id="check-in-time">{{checkIn.from_time}}</h4>
+			</div>
+		</div>
+		<div class=" info-segment">
+			<h1>Calendar</h1>
+		</div>
+		<div class=" info-segment">
+			<h1>Messages</h1>
+		</div>
+	</div>
+
+</body>

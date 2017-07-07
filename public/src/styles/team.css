@@ -1,0 +1,84 @@
+#team-sidebar{
+	background-color: white;
+}
+
+#recess-team-logo{
+	text-decoration: none;
+	font-size: 32px;
+	color: black;
+}
+
+#recess-team-logo-img{
+	padding-bottom: 14px;
+	font-size: 32px;
+}
+
+#main-team-content{
+	text-align: center;
+}
+
+#team-username{
+	margin: 0;
+}
+
+#add-location{
+	margin-left: 5px;
+}
+
+#team-nav-buttons{
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+#location-info{
+	height: 100vh;
+}
+
+#team-columns{
+	margin: 0;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.7);
+	display: flex;
+	margin-left: 260px;
+	padding: 2%;
+	height: 100vh;
+}
+
+.info-segment{
+	width: 33.3%;
+}
+
+.ui.small.modal{
+	padding: 20px;
+}
+
+.ui.modal > .actions{
+	background-color: white;
+	border-top: none;
+}
+#locations{
+	padding: 0;
+}
+
+#direct-messages{
+	padding: 0;
+}
+
+.nav-headers{
+	padding-top: 14px;
+}
+
+#name-submit{
+	margin-top: 5px;
+}
+
+#check-in{
+	margin-top: 15px;
+}
+
+#check-in-name{
+	margin:0;
+}
+
+#check-in-time{
+	margin-top:5px;
+}
