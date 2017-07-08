@@ -37,12 +37,10 @@ module.exports = {
 	checkInOutUser: function(req, res, next){
 		db = req.app.get('db');
 
-		var time = new Date().getTimezoneOffset();
-		console.log(time)
-
-		console.log(req.body);
-
-		res.status(200).send("hello")
+		console.log(req.body.name, req.body.activeLocation.location_id);
+		db.checkInOutUser([req.body.name, req.body.activeLocation.location_id]).then(function(response){
+			res.status(200).json(response);
+		})
 	},
 
 	getCheckIns: function(req, res, next){

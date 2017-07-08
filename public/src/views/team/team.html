@@ -79,20 +79,22 @@
 	</div>
 
 	<div id="team-columns">
-		<div class=" info-segment">
+		<div id="location-info" class=" info-segment">
 			<h1>{{locationName}}</h1>
 			<button ng-disabled="!name" ng-click="checkInOutUser()" class="ui primary button">Check In/Out</button>
 			<h2 ng-if="checkIns.length">Current Users</h2>
 			<h2 ng-if="!checkIns.length">No one here right now!</h2>
+
 			<div id="check-in" ng-repeat="checkIn in checkIns">
 				<h3 id="check-in-name">{{checkIn.user_name}}</h3>
 				<h4 id="check-in-time">{{checkIn.from_time}}</h4>
 			</div>
+			<h2>Your Reservations: </h2>
 		</div>
-		<div class=" info-segment">
-			<h1>Calendar</h1>
+		<div id="calendar-column" class=" info-segment">
+			<div ui-calendar="uiConfig.calendar" calendar= "locationCalendar" id="location-calendar" class="span8 calendar" ng-model="eventSources"></div>
 		</div>
-		<div class=" info-segment">
+		<div id="message-column" class=" info-segment">
 			<h1>Messages</h1>
 		</div>
 	</div>

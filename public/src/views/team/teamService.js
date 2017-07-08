@@ -27,6 +27,9 @@ angular.module("app").service("teamService", function($http){
 
 	this.getCheckIns = function(location_id){
 		return $http.post('/api/getCheckIns', {location_id, location_id}).then(function(response){
+			for(var i = 0; i < response.data.length; i++){
+				response.data[i].from_time = moment(response.data[i].from_time).tz(moment.tz.guess()).calendar(); 
+			}
 			return response;
 		})
 	}

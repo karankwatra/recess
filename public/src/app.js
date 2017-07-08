@@ -1,12 +1,10 @@
-angular.module("app", ['ui.router'])
+angular.module("app", ['ui.router', 'ui.calendar'])
 
 	.run(function() {
 		console.log("app running");
 	})
 
-	.config(function($urlRouterProvider, $stateProvider, $qProvider) {
-
-		$qProvider.errorOnUnhandledRejections(false);
+	.config(function($urlRouterProvider, $stateProvider) {
 
 		$urlRouterProvider.otherwise('/');
 
