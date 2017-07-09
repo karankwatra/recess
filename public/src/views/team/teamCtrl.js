@@ -13,8 +13,18 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		});
 	});
 
-	// uiCalendarConfig.calendars['locationCalendar'].fullCalendar('changeView','dayAgenda');
-	// $scope.changeView('dayAgenda', 'locationCalendar');
+	$('#from-time').calendar({
+		onChange: function (date,text) {
+			$scope.fromTime = moment.tz(date, 'UTC').format();
+		}
+	});
+
+	$('#to-time').calendar({
+		onChange: function (date,text) {
+			$scope.toTime = moment.tz(date, 'UTC').format();
+		}
+	});
+
 
 
 	$scope.id = $state.params.id;
@@ -74,6 +84,15 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		});
 	}
 
+	$scope.reserveLocation = function(reservationTitle){
+		teamService.reserveLocation(reservationTitle, $scope.name, $scope.activeLocation.location_id, $scope.fromTime, $scope.toTime).then(function(response){
+			console.log(response);
+		})
+	}
+
+
+
+	//Angular Calendar info
 
     var date = new Date();
     var d = date.getDate();
@@ -85,16 +104,17 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
     $scope.eventSource = {
             url: "http://www.google.com/calendar/feeds/usa__en%40holiday.calendar.google.com/public/basic",
             className: 'gcal-event',           // an option!
-            currentTimezone: 'America/Chicago' // an option!
+            currentTimezone: moment.tz.guess() // an option!
     };
     /* event source that contains custom events on the scope */
     $scope.events = [
-      {title: 'All Day Event',start: new Date(y, m, 1)},
-      {title: 'Long Event',start: new Date(y, m, d - 5),end: new Date(y, m, d - 2)},
-      {id: 999,title: 'Repeating Event',start: new Date(y, m, d - 3, 16, 0),allDay: false},
-      {id: 999,title: 'Repeating Event',start: new Date(y, m, d + 4, 16, 0),allDay: false},
-      {title: 'Birthday Party',start: new Date(y, m, d + 1, 19, 0),end: new Date(y, m, d + 1, 22, 30),allDay: false},
-      {title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
+    //   {title: 'All Day Event',start: new Date(y, m, 1)},
+      {title: 'test',start: new Date(y, m, d, 19, 0),end: new Date(y, m, d, 23, 0)}
+    //   {id: 999,title: 'Repeating Event',start: new Date(y, m, d - 3, 16, 0),allDay: false},
+    //   {id: 999,title: 'Repeating Event',start: new Date(y, m, d + 4, 16, 0),allDay: false},
+    //   {title: 'Birthday Party',start: new Date(y, m, d + 1, 19, 0),end: new Date(y, m, d + 1, 22, 30),allDay: false}
+    //   {title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
+			// {title: 'test event!', start: new Date(y,m,d,23,0)}, end: new Date(y,m,d+1), allDay: false
     ];
     /* event source that calls a function on every view switch */
     $scope.eventsF = function (start, end, timezone, callback) {
@@ -113,18 +133,6 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
           {type:'party',title: 'Lunch 2',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
           {type:'party',title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
         ]
-    };
-    /* alert on eventClick */
-    $scope.alertOnEventClick = function( date, jsEvent, view){
-        $scope.alertMessage = (date.title + ' was clicked ');
-    };
-    /* alert on Drop */
-     $scope.alertOnDrop = function(event, delta, revertFunc, jsEvent, ui, view){
-       $scope.alertMessage = ('Event Droped to make dayDelta ' + delta);
-    };
-    /* alert on Resize */
-    $scope.alertOnResize = function(event, delta, revertFunc, jsEvent, ui, view ){
-       $scope.alertMessage = ('Event Resized to make dayDelta ' + delta);
     };
     /* add and removes an event source of choice */
     $scope.addRemoveEventSource = function(sources,source) {
@@ -171,8 +179,8 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
     /* config object */
     $scope.uiConfig = {
       calendar:{
-        height: 600,
-        editable: true,
+        height: 450,
+        editable: false,
 		defaultView: 'agendaDay',
         header:{
           left: 'title',
@@ -186,17 +194,6 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
       }
     };
 
-    $scope.changeLang = function() {
-      if($scope.changeTo === 'Hungarian'){
-        $scope.uiConfig.calendar.dayNames = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
-        $scope.uiConfig.calendar.dayNamesShort = ["Vas", "Hét", "Kedd", "Sze", "Csüt", "Pén", "Szo"];
-        $scope.changeTo= 'English';
-      } else {
-        $scope.uiConfig.calendar.dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        $scope.uiConfig.calendar.dayNamesShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        $scope.changeTo = 'Hungarian';
-      }
-    };
     /* event sources array*/
     $scope.eventSources = [$scope.events, $scope.eventSource, $scope.eventsF];
     $scope.eventSources2 = [$scope.calEventsExt, $scope.eventsF, $scope.events];

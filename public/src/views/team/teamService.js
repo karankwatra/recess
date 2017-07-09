@@ -28,10 +28,19 @@ angular.module("app").service("teamService", function($http){
 	this.getCheckIns = function(location_id){
 		return $http.post('/api/getCheckIns', {location_id, location_id}).then(function(response){
 			for(var i = 0; i < response.data.length; i++){
-				response.data[i].from_time = moment(response.data[i].from_time).tz(moment.tz.guess()).calendar(); 
+				response.data[i].from_time = moment(response.data[i].from_time).tz(moment.tz.guess()).calendar();
 			}
 			return response;
 		})
+	}
+
+	this.reserveLocation = function(reservationTitle, name, location_id, fromTime, toTime){
+
+		return $http.post('/api/reserveLocation', {reservationTitle, name, location_id, fromTime, toTime}).then(function(response){
+			return response;
+		})
+
+		console.log(reservationTitle, name, fromTime, toTime);
 	}
 
 })

@@ -50,6 +50,18 @@ module.exports = {
 			res.status(200).json(response);
 		})
 
+	},
+
+	reserveLocation: function(req, res, next){
+
+		db = req.app.get('db');
+
+		db.reserveLocation([req.body.reservationTitle, req.body.name, req.body.location_id, req.body.fromTime, req.body.toTime]).then(function(response){
+			res.status(200).json(response);
+		})
+
+		// console.log(req.body);
+		// res.status(200).send("hello")
 	}
 
 
