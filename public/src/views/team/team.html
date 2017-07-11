@@ -32,6 +32,19 @@
 		</div>
 	</div>
 
+	<div id="reservation-error-modal" class="ui small modal">
+		<div class="description">
+  			<div class="ui header">There was an error in your form!</div>
+				<p>Check other reservations for conflicts and correct the times.</p>
+		</div>
+		<div class="actions">
+			<div ng-click="addLocation(location_name_in)" class="ui positive right labeled icon button">
+				OK
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+
 	<div id="team-sidebar" class="ui vertical sidebar menu left visible">
 		<div class="item">
 			<img class="logo icon image" id="recess-team-logo-img" src="./assets/oie_transparent.png">
@@ -80,17 +93,25 @@
 		<div id="location-info" class=" info-segment">
 			<h1>{{locationName}}</h1>
 			<button ng-disabled="!name" ng-click="checkInOutUser()" class="ui primary button">Check In/Out</button>
+
 			<h2 ng-if="checkIns.length">Current Users</h2>
 			<h2 ng-if="!checkIns.length">No one here right now!</h2>
-
 			<div id="check-in" ng-repeat="checkIn in checkIns">
 				<h3 id="check-in-name">{{checkIn.user_name}}</h3>
 				<h4 id="check-in-time">{{checkIn.from_time}}</h4>
 			</div>
-			<h2>Your Reservations: </h2>
+
+			<h2 ng-if="reservations.length">Your Reservations</h2>
+			<div id="reservation-container" ng-repeat="reservation in reservations">
+				<h3 id="reservation-title">{{reservation.title}}</h3>
+				<h4 id="reservation-time">{{reservation.from_time}} - <br />{{reservation.to_time}}</h4>
+				<button class="negative ui button mini">Delete</button>
+			</div>
+
 		</div>
+
 		<div id="calendar-column" class=" info-segment">
-			<div ui-calendar="uiConfig.calendar" calendar= "locationCalendar" id="location-calendar" class="span8 calendar" ng-model="eventSources"></div>
+			<div ng-click="getReservations()" ui-calendar="uiConfig.calendar" calendar= "locationCalendar" id="location-calendar" class="span8 calendar" ng-model="eventSources"></div>
 			<h2>{{locationName}}</h2>
 			<h3 ng-if="!name">Login To Make A Reservation!</h3>
 			<h3 ng-if="name">Make a Reservation:</h3>

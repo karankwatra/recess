@@ -43,4 +43,14 @@ angular.module("app").service("teamService", function($http){
 		console.log(reservationTitle, name, fromTime, toTime);
 	}
 
+	this.getReservations = function(location_id){
+		return $http.post('/api/getReservations', {location_id: location_id}).then(function(response){
+			for(var i = 0; i < response.data.length; i++){
+				response.data[i].from_time = moment(response.data[i].from_time).tz(moment.tz.guess()).format();
+				response.data[i].to_time = moment(response.data[i].to_time).tz(moment.tz.guess()).format();
+			}
+			return response.data;
+		})
+	}
+
 })

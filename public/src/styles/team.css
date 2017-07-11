@@ -107,3 +107,16 @@
 .calendar-container{
 	display: inline-block;
 }
+
+#reservation-title{
+	margin-bottom: 5px;
+}
+
+#reservation-time{
+	margin-top:0;
+	margin-bottom: 5px;
+}
+
+#reservation-container{
+	margin-bottom: 20px;
+}

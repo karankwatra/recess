@@ -25,10 +25,30 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		}
 	});
 
+	$scope.triggerLocationModal = function(){
+		$('#enter-location-modal')
+			.modal({
+				blurring: true
+			})
+			.modal('show');
+	}
+
+	$scope.triggerReservationModal = function(){
+		$('#reservation-error-modal')
+			.modal({
+				inverted: true
+			})
+			.modal('show');
+	}
+
 
 
 	$scope.id = $state.params.id;
 	$scope.name = "";
+	$scope.events = [];
+	var events = [];
+
+
 
 	teamService.getTeamName($scope.id).then(function(response) {
 		$scope.teamName = response.team_name;
@@ -38,9 +58,10 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		$scope.locations = response;
 		$scope.locationName = response[0].location_name;
 		$scope.activeLocation = response[0];
+		$scope.getReservations();
 		teamService.getCheckIns(response[0].location_id).then(function(response){
 			$scope.checkIns = response.data;
-		})
+		});
 	});
 
 
@@ -49,22 +70,41 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 	}
 
 	$scope.changeLocation = function(location) {
-		// console.log(moment.tz.guess());
-		// console.log(moment().format('lll'));
 		$scope.activeLocation = location;
 		$scope.locationName = location.location_name;
 		teamService.getCheckIns(location.location_id).then(function(response){
 			$scope.checkIns = response.data;
-			console.log($scope.checkIns);
 		});
+		$scope.getReservations();
 	}
 
-	$scope.triggerLocationModal = function(){
-		$('#enter-location-modal')
-			.modal({
-				blurring: true
-			})
-			.modal('show');
+	$scope.getReservations = function(){
+		teamService.getReservations($scope.activeLocation.location_id).then(function(response){
+			$scope.events.slice(0,$scope.events.length);
+			events = [];
+			for(var reservation of response){
+				var title = "";
+				if(reservation.title){
+					title = reservation.reserver + " - " + reservation.title;
+				}
+				else{
+					title = reservation.reserver
+				}
+				$scope.events.push({title:title, start:reservation.from_time, end:reservation.to_time});
+				events.push(reservation);
+			}
+			uiCalendarConfig.calendars['locationCalendar'].fullCalendar('refetchEvents');
+			$scope.reservations = [];
+			for(var i = 0; i < events.length; i++){
+				if(events[i].reserver === $scope.name){
+					$scope.reservations.push(events[i]);
+				}
+			}
+			for(var i = 0; i < $scope.reservations.length; i++){
+				$scope.reservations[i].from_time = moment($scope.reservations[i].from_time).format('lll');
+				$scope.reservations[i].to_time = moment($scope.reservations[i].to_time).format('lll');
+			}
+		})
 	}
 
 	$scope.addLocation = function(location_name){
@@ -85,15 +125,42 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 	}
 
 	$scope.reserveLocation = function(reservationTitle){
-		teamService.reserveLocation(reservationTitle, $scope.name, $scope.activeLocation.location_id, $scope.fromTime, $scope.toTime).then(function(response){
-			console.log(response);
-		})
+
+		var valid = true;
+
+		//make sure there are times and from time < to time
+		if(!($scope.fromTime && $scope.toTime && moment($scope.fromTime).isBefore($scope.toTime))){
+			valid = false;
+		}
+		if(valid){
+			for(var i = 0; i < events.length; i++){
+				//check if event starts or ends before another event
+				if((moment($scope.fromTime).isBetween(events[i].from_time, events[i].to_time) || moment($scope.fromTime).isBetween(events[i].from_time, events[i].to_time))){
+					valid = false;
+				}
+				//check if another event starts or ends at schedule attempt
+				if((moment(events[i].from_time).isBetween($scope.fromTime, $scope.toTime) || moment(events[i].to_time).isBetween($scope.fromTime, $scope.toTime))){
+					valid = false;
+				}
+				//check if event starts at same time as other event
+				if(events[i].from_time == $scope.fromTime){
+					valid = false;
+				}
+			}
+		}
+		if(!valid){
+			$scope.triggerReservationModal();
+		}
+		else{
+			teamService.reserveLocation(reservationTitle, $scope.name, $scope.activeLocation.location_id, $scope.fromTime, $scope.toTime).then(function(response){
+				$scope.getReservations();
+			})
+		}
+
 	}
 
 
-
 	//Angular Calendar info
-
     var date = new Date();
     var d = date.getDate();
     var m = date.getMonth();
@@ -106,16 +173,7 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
             className: 'gcal-event',           // an option!
             currentTimezone: moment.tz.guess() // an option!
     };
-    /* event source that contains custom events on the scope */
-    $scope.events = [
-    //   {title: 'All Day Event',start: new Date(y, m, 1)},
-      {title: 'test',start: new Date(y, m, d, 19, 0),end: new Date(y, m, d, 23, 0)}
-    //   {id: 999,title: 'Repeating Event',start: new Date(y, m, d - 3, 16, 0),allDay: false},
-    //   {id: 999,title: 'Repeating Event',start: new Date(y, m, d + 4, 16, 0),allDay: false},
-    //   {title: 'Birthday Party',start: new Date(y, m, d + 1, 19, 0),end: new Date(y, m, d + 1, 22, 30),allDay: false}
-    //   {title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
-			// {title: 'test event!', start: new Date(y,m,d,23,0)}, end: new Date(y,m,d+1), allDay: false
-    ];
+
     /* event source that calls a function on every view switch */
     $scope.eventsF = function (start, end, timezone, callback) {
       var s = new Date(start).getTime() / 1000;
@@ -125,15 +183,6 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
       callback(events);
     };
 
-    $scope.calEventsExt = {
-       color: '#f00',
-       textColor: 'yellow',
-       events: [
-          {type:'party',title: 'Lunch',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
-          {type:'party',title: 'Lunch 2',start: new Date(y, m, d, 12, 0),end: new Date(y, m, d, 14, 0),allDay: false},
-          {type:'party',title: 'Click for Google',start: new Date(y, m, 28),end: new Date(y, m, 29),url: 'http://google.com/'}
-        ]
-    };
     /* add and removes an event source of choice */
     $scope.addRemoveEventSource = function(sources,source) {
       var canAdd = 0;
@@ -146,15 +195,6 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
       if(canAdd === 0){
         sources.push(source);
       }
-    };
-    /* add custom event*/
-    $scope.addEvent = function() {
-      $scope.events.push({
-        title: 'Open Sesame',
-        start: new Date(y, m, 28),
-        end: new Date(y, m, 29),
-        className: ['openSesame']
-      });
     };
     /* remove event */
     $scope.remove = function(index) {
@@ -197,8 +237,6 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
     /* event sources array*/
     $scope.eventSources = [$scope.events, $scope.eventSource, $scope.eventsF];
     $scope.eventSources2 = [$scope.calEventsExt, $scope.eventsF, $scope.events];
-
-
 
 
 })
