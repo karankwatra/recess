@@ -17,7 +17,8 @@ app.post('/api/addLocation', teamCtrl.addLocation);
 app.post('/api/checkInOutUser', teamCtrl.checkInOutUser);
 app.post('/api/getCheckIns', teamCtrl.getCheckIns);
 app.post('/api/reserveLocation', teamCtrl.reserveLocation);
-app.post('/api/getReservations', teamCtrl.getReservations); 
+app.post('/api/getReservations', teamCtrl.getReservations);
+app.post('/api/deleteReservation', teamCtrl.deleteReservation); 
 
 massive(config.postgres)
 .then(function(db) {

@@ -105,7 +105,7 @@
 			<div id="reservation-container" ng-repeat="reservation in reservations">
 				<h3 id="reservation-title">{{reservation.title}}</h3>
 				<h4 id="reservation-time">{{reservation.from_time}} - <br />{{reservation.to_time}}</h4>
-				<button class="negative ui button mini">Delete</button>
+				<button ng-click="deleteReservation(reservation.reservation_id)" class="negative ui button mini">Delete</button>
 			</div>
 
 		</div>

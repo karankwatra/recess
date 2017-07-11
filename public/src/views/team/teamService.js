@@ -39,8 +39,6 @@ angular.module("app").service("teamService", function($http){
 		return $http.post('/api/reserveLocation', {reservationTitle, name, location_id, fromTime, toTime}).then(function(response){
 			return response;
 		})
-
-		console.log(reservationTitle, name, fromTime, toTime);
 	}
 
 	this.getReservations = function(location_id){
@@ -50,6 +48,12 @@ angular.module("app").service("teamService", function($http){
 				response.data[i].to_time = moment(response.data[i].to_time).tz(moment.tz.guess()).format();
 			}
 			return response.data;
+		})
+	}
+
+	this.deleteReservation = function(reservation_id) {
+		return $http.post('/api/deleteReservation', {reservation_id: reservation_id}).then(function(response){
+			return response;
 		})
 	}
 

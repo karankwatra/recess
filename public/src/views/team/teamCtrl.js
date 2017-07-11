@@ -1,17 +1,18 @@
 angular.module("app").controller("teamCtrl", function($scope, $state, teamService, $compile, uiCalendarConfig) {
 
-	$('#enter-name-modal')
-		.modal({
-			blurring: true
-		})
-		.modal('show');
-
 	$(document).ready(function() {
 		$('.team-nav-buttons').on('click', function() {
 			$('.team-nav-buttons').removeClass('active');
 			$(this).addClass('active');
 		});
 	});
+	
+	$('#enter-name-modal')
+		.modal({
+			blurring: true
+		})
+		.modal('show');
+
 
 	$('#from-time').calendar({
 		onChange: function (date,text) {
@@ -58,7 +59,7 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		$scope.locations = response;
 		$scope.locationName = response[0].location_name;
 		$scope.activeLocation = response[0];
-		$scope.getReservations();
+
 		teamService.getCheckIns(response[0].location_id).then(function(response){
 			$scope.checkIns = response.data;
 		});
@@ -67,6 +68,7 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 
 	$scope.getName = function(name) {
 		$scope.name = name;
+		$scope.getReservations();
 	}
 
 	$scope.changeLocation = function(location) {
@@ -108,11 +110,13 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 	}
 
 	$scope.addLocation = function(location_name){
-		teamService.addLocation(location_name, $scope.id).then(function(response){
-			teamService.getTeamLocations($scope.id).then(function(response){
-				$scope.locations = response;
-			})
-		});
+		if(location_name){
+			teamService.addLocation(location_name, $scope.id).then(function(response){
+				teamService.getTeamLocations($scope.id).then(function(response){
+					$scope.locations = response;
+				})
+			});
+		}
 	}
 
 	$scope.checkInOutUser = function(){
@@ -124,10 +128,14 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		});
 	}
 
+	$scope.deleteReservation = function(reservation_id){
+		teamService.deleteReservation(reservation_id).then(function(response){
+			$scope.getReservations();
+		})
+	}
+
 	$scope.reserveLocation = function(reservationTitle){
-
 		var valid = true;
-
 		//make sure there are times and from time < to time
 		if(!($scope.fromTime && $scope.toTime && moment($scope.fromTime).isBefore($scope.toTime))){
 			valid = false;

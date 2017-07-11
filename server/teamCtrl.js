@@ -67,6 +67,14 @@ module.exports = {
 		db.getReservations([req.body.location_id]).then(function(response){
 			res.status(200).json(response);
 		})
+	},
+
+	deleteReservation: function(req, res, next){
+		db = req.app.get('db');
+
+		db.deleteReservation([req.body.reservation_id]).then(function(response){
+			res.status(200).send("deleted reservation"); 
+		})
 	}
 
 
