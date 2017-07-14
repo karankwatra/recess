@@ -1,18 +1,14 @@
-angular.module("app").controller("teamCtrl", function($scope, $state, teamService, $compile, uiCalendarConfig) {
+angular.module("app").controller("teamCtrl", function($scope, $state, teamService, $timeout, $compile, uiCalendarConfig) {
 
 	$(document).ready(function() {
 		$('.team-nav-buttons').on('click', function() {
 			$('.team-nav-buttons').removeClass('active');
 			$(this).addClass('active');
 		});
-	});
-	
-	$('#enter-name-modal')
-		.modal({
-			blurring: true
-		})
-		.modal('show');
 
+			if($(window).width() <=760) $('#team-sidebar').removeClass("visible");
+			else $('#team-sidebar').addClass("visible");
+	});
 
 	$('#from-time').calendar({
 		onChange: function (date,text) {
@@ -25,6 +21,8 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 			$scope.toTime = moment.tz(date, 'UTC').format();
 		}
 	});
+
+
 
 	$scope.triggerLocationModal = function(){
 		$('#enter-location-modal')
@@ -48,8 +46,49 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 	$scope.name = "";
 	$scope.events = [];
 	var events = [];
+	var socket = io.connect();
 
+	$scope.sendMessage = function(message) {
+		console.log(message);
+		console.log(new Date());
+		var time = moment().tz('UTC').format();
+		console.log(time);
+		socket.emit("newMessage", {message, username: $scope.name, room: $scope.activeLocation.location_id, time: time })
+		teamService.sendMessage($scope.activeLocation.location_id, message, $scope.name).then(function(response){
+			console.log(response);
+		});
+		return false;
+	}
 
+	socket.on('connect', function(){
+		console.log("Connected")
+	});
+
+	socket.on('newRoomMessage', function(msg){
+		console.log(msg);
+		var time = moment(msg.time).tz(moment.tz.guess()).calendar();
+		$scope.$apply(function () {
+			$scope.messages.push({location_id: msg.room, message: msg.message, message_time: time, sender: msg.username})
+    	});
+	});
+
+	teamService.getName().then(function(response){
+		if(response.data.user){
+			$scope.name = response.data.user;
+		}
+	})
+
+	setTimeout(function(){
+		if(!$scope.name){
+			$('#enter-name-modal')
+			.modal({
+				blurring: true,
+				inverted: true
+			})
+			.modal('setting', 'closable', false)
+			.modal('show');
+		}
+	}, 10);
 
 	teamService.getTeamName($scope.id).then(function(response) {
 		$scope.teamName = response.team_name;
@@ -59,25 +98,72 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 		$scope.locations = response;
 		$scope.locationName = response[0].location_name;
 		$scope.activeLocation = response[0];
+		socket.emit('room', {leaving: null, joining: response[0].location_id})
 
+		teamService.getMessages(response[0].location_id).then(function(response){
+			$scope.messages = response.data;
+		})
 		teamService.getCheckIns(response[0].location_id).then(function(response){
 			$scope.checkIns = response.data;
 		});
 	});
 
 
-	$scope.getName = function(name) {
-		$scope.name = name;
-		$scope.getReservations();
+	$scope.getName = function(user) {
+		teamService.findUser(user).then(function(response){
+			console.log(response);
+			if(response.loggedIn){
+				console.log("logged in");
+				$('#recess-team-logo-img')
+				.transition('horizontal flip')
+				;
+				$('#recess-team-logo-img')
+				.transition('horizontal flip')
+				;
+
+				$scope.name = user.username;
+				$scope.getReservations();
+
+				teamService.startUserSession(user.username).then(function(response){
+					console.log(response);
+				})
+			}
+		})
+	}
+
+	$scope.pullOutSidebar = function(){
+		$('#team-sidebar')
+		.sidebar('setting', 'transition', 'overlay')
+		.sidebar('toggle')
+		var pusher = document.querySelector('.pusher')
+		pusher.style.overflow = "auto"
+		setTimeout(function(){$('#recess-team-logo-img').removeClass("hidden");},700)
 	}
 
 	$scope.changeLocation = function(location) {
+		if($(window).width() <=760){	
+			$('#team-sidebar')
+			.sidebar('toggle')
+		}
+
+		socket.emit("room", {leaving: $scope.activeLocation.location_id, joining: location.location_id})
+		$('.location')
+  		.transition('scale')
+		;
+		$('.location')
+		.transition('scale')
+		;
 		$scope.activeLocation = location;
-		$scope.locationName = location.location_name;
-		teamService.getCheckIns(location.location_id).then(function(response){
-			$scope.checkIns = response.data;
-		});
-		$scope.getReservations();
+		$timeout(function(){		$scope.locationName = location.location_name;
+									teamService.getCheckIns(location.location_id).then(function(response){
+										$scope.checkIns = response.data;
+									});
+									$scope.getReservations();
+									teamService.getMessages(location.location_id).then(function(response){
+										$scope.messages = response.data;
+										console.log($scope.messages);
+									})
+		}, 190)
 	}
 
 	$scope.getReservations = function(){
@@ -120,6 +206,7 @@ angular.module("app").controller("teamCtrl", function($scope, $state, teamServic
 	}
 
 	$scope.checkInOutUser = function(){
+
 		teamService.checkInOutUser($scope.id, $scope.activeLocation, $scope.name).then(function(response){
 			teamService.getCheckIns($scope.activeLocation.location_id).then(function(response){
 				$scope.checkIns = response.data;

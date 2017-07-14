@@ -1,0 +1,19 @@
+<nav-dir></nav-dir>
+<div class="team-info">
+	<h1 style="font-size:64px">Start With a Team</h1>
+	<p class="header-text">On Recess, everything happens on a team. A Recess team is simply a group of people using Recess together - like your company or organization.
+	If your group if already on Recess, ask the admin of your team for the password, or do you need to start a new team?</p>
+	<div class="ui feed">
+		<div ng-repeat="team in teams" class="event">
+			<div class="label">
+				<img src="./assets/oie_transparent.png">
+			</div>
+			<div class="content">
+				<h3>{{team.team_name}}</h3>
+			</div>
+		</div>
+	</div>
+	<div ui-sref="create-team" class="ui primary button">
+		Create A Team
+	</div>
+</div>

@@ -1,4 +1,4 @@
-angular.module("app").service("homeService", function($http){
+angular.module("app").service("homeService", function($http, $stateParams){
 	var self = this
 	this.loggedIn = false;
 	this.loggedInTeam = null;
@@ -8,14 +8,16 @@ angular.module("app").service("homeService", function($http){
 			if(response){
 				console.log(response);
 				self.loggedIn = true;
-				self.loggedInTeam = response.data.team_id; 
+				self.loggedInTeam = response.data.team_id;
 				return response;
 			}
 		})
 	}
-	this.isLoggedIn = function(){
-		console.log(self.loggedIn);
-		return self.loggedIn;
+	this.isLoggedIn = function(id){
+		console.log(id);
+		return $http.post('/api/getUserSession', {id: parseInt(id)} ).then(function(response){
+			return response; 
+		})
 	}
 
 })

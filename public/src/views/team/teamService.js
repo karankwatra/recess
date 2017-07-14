@@ -57,4 +57,37 @@ angular.module("app").service("teamService", function($http){
 		})
 	}
 
+	this.getMessages = function(location_id){
+		return $http.post('/api/getMessages', {location_id: location_id}).then(function(response){
+			for(var i = 0; i < response.data.length; i++){
+				response.data[i].message_time = moment(response.data[i].message_time).tz(moment.tz.guess()).calendar();
+			}
+			return response;
+		})
+	}
+
+	this.sendMessage = function(location_id, message,  sender){
+		return $http.post('/api/sendMessage', {location_id: location_id, message: message, sender: sender}).then(function(response){
+			return response;
+		})
+	}
+
+	this.getName = function(){
+		return $http.get('/api/getName').then(function(response){
+			return response;
+		})
+	}
+
+	this.startUserSession = function(name){
+		return $http.post('/api/startUserSession', {name: name}).then(function(response){
+			return response;
+		})
+	}
+
+	this.findUser = function(user){
+		return $http.post('/api/findUser', {user: user}).then(function(response){
+			return response.data; 
+		})
+	}
+
 })
