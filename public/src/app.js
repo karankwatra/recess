@@ -26,16 +26,29 @@ angular.module("app", ['ui.router', 'ui.calendar'])
 				resolve: {
 					isLoggedIn: function(homeService, $state, $stateParams) {
 						var promise = new Promise(function(resolve, reject) {
-							console.log(homeService.isLoggedIn())
-							if (homeService.isLoggedIn() && homeService.loggedInTeam == $stateParams.id) {
-								resolve(true)
-							} else {
-								$state.go('home')
-								// reject(false)
-							}
+							var id = $stateParams.id;
+							console.log(homeService.isLoggedIn(id))
+							homeService.isLoggedIn($stateParams.id).then(function(response){
+								if(response.data.loggedIn){
+									resolve(true)
+								}
+								else{
+									$state.go('home')
+								}
+							})
 						})
 						return promise
 					}
 				}
+			})
+			.state("find-team", {
+				url:"/find-team",
+				templateUrl: './src/views/find-team/find-team.html',
+				controller: "findTeamCtrl"
+			})
+			.state("create-team", {
+				url:"/create-team",
+				templateUrl: './src/views/create-team/create-team.html',
+				controller: "createTeamCtrl"
 			})
 	})
